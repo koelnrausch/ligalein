@@ -36,12 +36,14 @@ while True:
     st = response.text
     st = st.strip('"')
     if (st != baselinetime) :
+        ts= datetime.now()
+        coloredOutput.printWarning("local time: "+ ts.strftime("%Y-%m-%d  %H:%M:%S"))
         baselinetime = st
         #st = "2011-11-30T09:15:55.596"
 
         coloredOutput.printFromHost("Status: " + str(response.status_code) + "\ntext:  " + response.text)
         lUp=datetime.strptime(st,"%Y-%m-%dT%H:%M:%S.%f").timetuple()
-        print(lUp)
+        coloredOutput.printFromHost("Host changed at:    "+ st)
     else:
         print (".",end="")
 
