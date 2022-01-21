@@ -1,0 +1,14 @@
+import psutil
+import platform
+from datetime import datetime
+import socket
+
+uname=platform.uname()
+print("System:    ",uname.system)
+print("Node Name: ",uname.node)
+print("Release:   ",uname.release)
+print("Version:   ",uname.version)
+print("Machine:   ",uname.machine)
+print("Processor: ",uname.processor)
+print("\n")
+print("Hostname:  ",socket.gethostname())
