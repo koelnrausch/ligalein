@@ -10,6 +10,8 @@ import json
 import ligaTarget
 from datetime import datetime
 import time
+import xml.etree.ElementTree as ET
+
 id=ligaTarget.getSerial()
 ts= datetime.now()
 
@@ -24,26 +26,48 @@ print("\n")
 print("Hostname:  ",socket.gethostname())
 
 #params={'id':id, 'format':'json', 'tslocal':ts}
-headers={'content-type':'application/json'}
+#headers={'content-type':'application/json'}
 # syslogStable("pingHostStable()","1","ID: "+id)
 baselinetime = ""
 
+# füllen von baslineMatches - alle matches des spieltags
+baselineMatches = [];
+baseurlMatchDay = "https://www.openligadb.de/api/getmatchdata/bl1/2021/20"
+responseMatchDay = requests.get(baseurlMatchDay)
+jsonResp = responseMatchDay.json()
+for match in jsonResp:
+    #print (match["MatchID"])
+    baselineMatches.append(match)
+
+
 while True:
-    baseurl = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"
-    response = requests.get(baseurl, headers=headers)
-    
+    baseurlLastChange = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"
+    baseurlMatchDay = "https://www.openligadb.de/api/getmatchdata/bl1/2021/20"
+    responseLastChange = requests.get(baseurlLastChange)
+    responseMatchDay = requests.get(baseurlMatchDay)
+    #print (response.content)
+    jsonResp = responseMatchDay.json()
+    #print (jsonResp)
+    ##root = ET.fromstring(response.content)
+    #print ("2")
+    #print (len(jsonResp))
+    #print (jsonResp[2])
     #lUp = datetime.strftime(response.text)
-    st = response.text
+    st = responseLastChange.text
     st = st.strip('"')
     if (st != baselinetime) :
         ts= datetime.now()
         coloredOutput.printWarning("local time: "+ ts.strftime("%Y-%m-%d  %H:%M:%S"))
         baselinetime = st
-        #st = "2011-11-30T09:15:55.596"
 
-        coloredOutput.printFromHost("Status: " + str(response.status_code) + "\ntext:  " + response.text)
+        coloredOutput.printFromHost("Status: " + str(responseLastChange.status_code) + "\ntext:  " + responseLastChange.text)
         lUp=datetime.strptime(st,"%Y-%m-%dT%H:%M:%S.%f").timetuple()
         coloredOutput.printFromHost("Host changed at:    "+ st)
+
+        for i in range(len(jsonResp)):
+            print (jsonResp[i])
+            if jsonResp[i] != baselineMatches[i]:
+                print("changed")
     else:
         print (".",end="")
 
