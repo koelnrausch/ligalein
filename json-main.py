@@ -3,6 +3,7 @@ from multiprocessing.connection import wait
 import platform
 from datetime import datetime
 import socket
+from tkinter import E
 import urllib.request
 import requests
 import coloredOutput
@@ -43,8 +44,18 @@ for match in jsonResp:
 while True:
     baseurlLastChange = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"
     baseurlMatchDay = "https://www.openligadb.de/api/getmatchdata/bl1/2021/20"
-    responseLastChange = requests.get(baseurlLastChange)
-    responseMatchDay = requests.get(baseurlMatchDay)
+    
+    try:
+        responseLastChange = requests.get(baseurlLastChange)
+    except requests.exceptions.HTTPError as e:
+        print( e)
+
+    try:
+        responseMatchDay = requests.get(baseurlMatchDay)
+    except requests.exceptions.HTTPError as e:
+        print( e)
+    
+    
     #print (response.content)
     jsonResp = responseMatchDay.json()
     #print (jsonResp)
@@ -65,9 +76,10 @@ while True:
         coloredOutput.printFromHost("Host changed at:    "+ st)
 
         for i in range(len(jsonResp)):
-            print (jsonResp[i])
+            print ("read "+str(i))
             if jsonResp[i] != baselineMatches[i]:
-                print("changed")
+                print("changed: " + str(i))
+                print (jsonResp[i])
     else:
         print (".",end="")
 
