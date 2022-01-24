@@ -32,14 +32,17 @@ print("Hostname:  ",socket.gethostname())
 baselinetime = ""
 
 # füllen von baslineMatches - alle matches des spieltags
+baseUrl = "https://api.openligadb.de/GetCurrentGroup/bl1"
 baselineMatches = [];
 baseurlMatchDay = "https://www.openligadb.de/api/getmatchdata/bl1/2021/20"
-responseMatchDay = requests.get(baseurlMatchDay)
+responseMatchDay = requests.get(baseUrl)
 jsonResp = responseMatchDay.json()
-for match in jsonResp:
-    #print (match["MatchID"])
-    baselineMatches.append(match)
 
+for match in jsonResp:
+    print ("Name:     " + match["groupName"])
+    print ("Group:    " + match["groupOrderID"])
+    print ("Group ID: " + match["groupID"])
+    
 
 while True:
     baseurlLastChange = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"

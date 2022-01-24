@@ -4,7 +4,7 @@ import urllib.request
 import requests
 import sys
 import getopt
-import MySQLdb as mdb
+#import MySQLdb as mdb
 import ligaTarget
 import ligaDB
 
