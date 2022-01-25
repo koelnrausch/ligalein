@@ -12,7 +12,28 @@ import requests
 
 import coloredOutput
 
+def isMatchDayFinished(matchDay):
+    if (ligaTarget.bVerbose):
+        print("->  getCurrentMatchDay.py/isMatchDayFinished()")    
+
+    isFinished = True
+    
+    for match in matchDay:
+        if (match["matchIsFinished"] != True):
+            isFinished = False
+
+        if (ligaTarget.bVerbose):
+             print ("IsFinished:   " + str( match["matchIsFinished"]) )
+
+
+    if (ligaTarget.bVerbose):
+        print("end of  getCurrentMatchDay.py/isMatchDayFinished()")   
+        
+    return isFinished
+
 def getMatchDayRoster(iMatchDay):
+    if (ligaTarget.bVerbose):
+        print("->  getCurrentMatchDay.py/getCurrentMatchDay()")    
     baseURLMatchRoster= "https://api.openligadb.de/getmatchdata/bl1/2021/" + str (iMatchDay)
     if ligaTarget.bVerbose:
         coloredOutput.printQry(baseURLMatchRoster)
@@ -24,16 +45,15 @@ def getMatchDayRoster(iMatchDay):
 
     jsonResp = responseMatchDay.json()
     for match in jsonResp:
-        print ("Match ID:     " + str( match["matchID"]) )
-        print ("Date:         " + match["matchDateTimeUTC"])
-        print ("Team 1:       " + str(match["team1"]["teamName"])  + ":" + str(match["team2"]["teamName"]) )
-        #print ("Team 2:       " + str( match["team2"]) )
+        if (ligaTarget.bVerbose):
+            print ("Match ID:     " + str( match["matchID"]) )
+            print ("Date:         " + match["matchDateTimeUTC"])
+            print ("Team 1:       " + str(match["team1"]["teamName"])  + ":" + str(match["team2"]["teamName"]) )
 
-    jsMatchDay ={}
-    return jsMatchDay
+    if (ligaTarget.bVerbose):
+        print("End of getCurrentMatchDay.py/getCurrentMatchDay()")
 
-    return 0
-
+    return jsonResp
 
 
 # here we start with the actual process to
@@ -90,8 +110,12 @@ if __name__ == '__main__':
     if (ligaTarget.bVerbose):
         coloredOutput.printSuperVerbose("Macthday: " + strMatchDay + " will be used.")
 
-    getMatchDayRoster(int(strMatchDay))
+    matchDay = getMatchDayRoster(int(strMatchDay))
 
-    
+    if (isMatchDayFinished(matchDay)):
+        print("Match Day is finished.")
+    else:
+        print("Match Day is not yet finished.")
+
     if (ligaTarget.bVerbose):
         print("End of getCurrentMatchDay.py")
