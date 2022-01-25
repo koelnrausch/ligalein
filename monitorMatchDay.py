@@ -78,7 +78,7 @@ if __name__ == '__main__':
         coloredOutput.printSuperVerbose("Matchday: " + strMatchDay + " (OVERRIDE)")
     else:
         strMatchDay = str(getCurrentMatchDay.getCurrentMatchDay())
-        print("Matchday: " + strMatchDay )
+        coloredOutput.printSuperVerbose("Matchday: " + strMatchDay )
 
     if args.year:
         strMatchYear=args.year
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     matchDay = getCurrentMatchDayRoster.getMatchDayRoster(int(strMatchDay))
 
     if (getCurrentMatchDayRoster.isMatchDayFinished(matchDay)):
-        print("Match Day is finished.")
+        coloredOutput.printWarning("Match Day is finished.")
     else:
         LOCAL_TIMEZONE = datetime.now().astimezone().tzinfo
         if ligaTarget.bVerbose:
@@ -115,14 +115,15 @@ if __name__ == '__main__':
         #print (nextLocal)
 
         diff = nextLocal - nowCET
-        print ("time to next game")
-        print (diff)
+        if (ligaTarget.bVerbose):
+            print ("time to next game")
+            print (diff)
+
         days, seconds = diff.days, diff.seconds
         hours = days * 24 + (seconds /3600)
-        print (str(int(hours)) + " hours to go" )
+        if (hours > 23):
+            coloredOutput.printWarning(str(int(hours)) + " hours to go - tune back in 24hrs before game day" )
 
-        #if ((diff.days>0 ) and (diff.min > 60)):
-        #   print("Start again on game day")
 
         if (ligaTarget.bVerbose):
             print("End of monitorMatchDay.py")
