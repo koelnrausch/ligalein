@@ -125,5 +125,5 @@ if __name__ == '__main__':
         #   print("Start again on game day")
 
         if (ligaTarget.bVerbose):
-            print("End of getCurrentMatchDayRoster.py")
+            print("End of monitorMatchDay.py")
     
