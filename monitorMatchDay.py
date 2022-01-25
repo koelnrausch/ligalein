@@ -111,8 +111,6 @@ if __name__ == '__main__':
         nowCET = local_timezone.localize(now)
         nextUTC =zulu_timezone.localize(timeNextGame)
         nextLocal = nextUTC.astimezone(LOCAL_TIMEZONE)
-        #print (nowCET)
-        #print (nextLocal)
 
         diff = nextLocal - nowCET
         if (ligaTarget.bVerbose):
@@ -123,6 +121,10 @@ if __name__ == '__main__':
         hours = days * 24 + (seconds /3600)
         if (hours > 23):
             coloredOutput.printWarning(str(int(hours)) + " hours to go - tune back in 24hrs before game day" )
+        else:
+            coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
+            
+
 
 
         if (ligaTarget.bVerbose):
