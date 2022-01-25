@@ -13,6 +13,9 @@ import coloredOutput
 
 def getCurrentMatchDay():
     iMatchDay = 0
+    
+    if (ligaTarget.bVerbose):
+        print("->  getCurrentMatchDay.py/getCurrentMatchDay()")    
 
     baseUrl = "https://api.openligadb.de/GetCurrentGroup/bl1"
 
@@ -31,6 +34,10 @@ def getCurrentMatchDay():
         print (jsonResp["groupID"])
     
     iMatchDay = int( jsonResp["groupOrderID"])
+    
+    if (ligaTarget.bVerbose):
+        print("...matchday: " + str(iMatchDay))
+        print("<-  getCurrentMatchDay.py/getCurrentMatchDay()")    
 
     return iMatchDay
 

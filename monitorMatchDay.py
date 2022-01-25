@@ -1,8 +1,13 @@
 # Schreibe hier Deinen Code :-)
 import os
+import time
+import pytz
 import uuid
 
 import getCurrentMatchDay 
+import getCurrentMatchDayRoster
+
+from datetime import datetime
 
 #import MySQLdb as mdb
 from time import sleep
@@ -12,48 +17,25 @@ import requests
 
 import coloredOutput
 
-def isMatchDayFinished(matchDay):
-    if (ligaTarget.bVerbose):
-        print("->  getCurrentMatchDayRoster.py/isMatchDayFinished()")    
 
-    isFinished = True
+def earliestGame(matchDay):
+    if (ligaTarget.bVerbose):
+        print("->  monitorMatchDay.py/earliestGame()")    
+    earlyGame = matchDay[0]["matchDateTimeUTC"]
+
     
     for match in matchDay:
-        if (match["matchIsFinished"] != True):
-            isFinished = False
+        if (match["matchDateTimeUTC"] < earlyGame):
+            earlyGame = match["matchDateTimeUTC"]
+            if (ligaTarget.bVerbose):
+                 print ("Game         :   " + str( match["matchID"]) )
+                 print ("Earliest Game:   " + str( match["matchDateTimeUTC"]) )
 
-        if (ligaTarget.bVerbose):
-             print ("IsFinished:   " + str( match["matchIsFinished"]) )
 
-
-    if (ligaTarget.bVerbose):
-        print("<-  getCurrentMatchDayRoster.py/isMatchDayFinished()")   
-        
-    return isFinished
-
-def getMatchDayRoster(iMatchDay):
-    if (ligaTarget.bVerbose):
-        print("->  getCurrentMatchDayRoster.py/getMatchDayRoster()")    
-    baseURLMatchRoster= "https://api.openligadb.de/getmatchdata/bl1/2021/" + str (iMatchDay)
-    if ligaTarget.bVerbose:
-        coloredOutput.printQry(baseURLMatchRoster)
-
-    try:
-        responseMatchDay = requests.get(baseURLMatchRoster)
-    except requests.exceptions.HTTPError as e:
-        print( e)
-
-    jsonResp = responseMatchDay.json()
-    for match in jsonResp:
-        if (ligaTarget.bVerbose):
-            print ("Match ID:     " + str( match["matchID"]) )
-            print ("Date:         " + match["matchDateTimeUTC"])
-            print ("Team 1:       " + str(match["team1"]["teamName"])  + ":" + str(match["team2"]["teamName"]) )
 
     if (ligaTarget.bVerbose):
-        print("<-  getCurrentMatchDayRoster.py/getMatchDayRoster()") 
-
-    return jsonResp
+        print("<-  getCurrentMatchDayRoster.py/earliestGame()")       
+    return earlyGame
 
 
 # here we start with the actual process to
@@ -109,14 +91,39 @@ if __name__ == '__main__':
         coloredOutput.printSuperVerbose("Message: " + strMatchYear + " will be used as year.")
     if (ligaTarget.bVerbose):
         coloredOutput.printSuperVerbose("Macthday: " + strMatchDay + " will be used.")
+    
+    matchDay = getCurrentMatchDayRoster.getMatchDayRoster(int(strMatchDay))
 
-    matchDay = getMatchDayRoster(int(strMatchDay))
-
-    if (isMatchDayFinished(matchDay)):
+    if (getCurrentMatchDayRoster.isMatchDayFinished(matchDay)):
         print("Match Day is finished.")
     else:
-        print("Match Day is not yet finished.")
-
-    if (ligaTarget.bVerbose):
-        print("End of getCurrentMatchDayRoster.py")
+        LOCAL_TIMEZONE = datetime.now().astimezone().tzinfo
+        if ligaTarget.bVerbose:
+            print("Match Day is not yet finished.")
         
+
+        earlyGame = earliestGame(matchDay)
+        timeNextGame = datetime.strptime(earlyGame,"%Y-%m-%dT%H:%M:%SZ")
+        
+        zulu_timezone = pytz.timezone("UTC")
+        local_timezone = pytz.timezone("CET")
+        now = datetime.now()
+        nowCET = local_timezone.localize(now)
+        nextUTC =zulu_timezone.localize(timeNextGame)
+        nextLocal = nextUTC.astimezone(LOCAL_TIMEZONE)
+        #print (nowCET)
+        #print (nextLocal)
+
+        diff = nextLocal - nowCET
+        print ("time to next game")
+        print (diff)
+        days, seconds = diff.days, diff.seconds
+        hours = days * 24 + (seconds /3600)
+        print (str(int(hours)) + " hours to go" )
+
+        #if ((diff.days>0 ) and (diff.min > 60)):
+        #   print("Start again on game day")
+
+        if (ligaTarget.bVerbose):
+            print("End of getCurrentMatchDayRoster.py")
+    
