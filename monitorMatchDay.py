@@ -95,11 +95,10 @@ if __name__ == '__main__':
     
     if args.force:
         bForced ="True"
-        coloredOutput.printSuperVerbose("forced mode turned on")
+        coloredOutput.printSuperVerbose("forced entry mode turned on")
         #ligaTarget.bVerbose=True
     
-    strMatchDay = ""
-
+    
     if args.day:
         strMatchDay = args.day
         coloredOutput.printSuperVerbose("Matchday: " + strMatchDay + " (OVERRIDE)")

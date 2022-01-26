@@ -1,5 +1,10 @@
+
 bVerbose = False  # set true for verbose outputs
 bDebug = False  # set true for verbose outputs
+
+strLeagueIdentifier = "bl1"
+
+
 
 
 def ligaTarget():
@@ -12,19 +17,29 @@ def ligaTarget():
 
     return(strLigaTarget)
 
+#  baseUrl = "https://api.openligadb.de/GetCurrentGroup/bl1"
+#   https://api.openligadb.de/getmatchdata/bl1/2020/8
 def getBaseURL(strLigaTarget):
     if (strLigaTarget == 'Production'):
-        baseurl = "http://www.koelnrausch.de/smartstable/api/"
+        baseurl = "https://api.openligadb.de/"
     elif (strLigaTarget == 'DebugMac'):
-        baseurl = "http://alinn-imac5k.local/smartstable/API/"
+        baseurl = "https://api.openligadb.de/"
     elif (strLigaTarget == 'ProductionAWS'):
-        baseurl = "http://18.195.91.245/smartstable/API/"
+        baseurl = "https://api.openligadb.de/"
     elif (strLigaTarget == 'ProductionAWS_VPN'):
-        baseurl = "http://10.8.0.1/smartstable/API/"
+        baseurl = "https://api.openligadb.de/"
     else:
-        baseurl = "http://www.koelnrausch.de/smartstable/api/"
+        baseurl = "https://api.openligadb.de/"
 
     return baseurl
+
+def getApiGetCurrentGroupURL(strLigaTarget):
+    strURL = getBaseURL(strLigaTarget) + "GetCurrentGroup/"+strLeagueIdentifier + "/"
+    return strURL
+
+def getApiGetmatchdata(strLigaTarget):
+    strURL = getBaseURL(strLigaTarget) + "GetCurrentGroup/"+strLeagueIdentifier+"/"
+    return strURL
 
 
 def getSerial():
