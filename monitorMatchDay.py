@@ -16,6 +16,26 @@ import ligaTarget
 import requests
 
 import coloredOutput
+def waitForMatchDayStart(nextLocal):
+    now = datetime.now()
+    nowCET = local_timezone.localize(now)
+    diff = nextLocal - nowCET
+    if (ligaTarget.bVerbose):
+        print ("time to next game")
+        print (diff)
+
+    days, seconds = diff.days, diff.seconds
+    if (ligaTarget.bVerbose):
+        print ("Days:    " + str (days))
+        print ("Seconds: " + str (seconds))
+
+    hours = days * 24 + (seconds /3600) 
+    Waitseconds = days * 24 * 60 * 60 + seconds
+    if (ligaTarget.bVerbose):
+        print ("sleep:   " + str (Waitseconds))
+    
+
+    return
 
 
 def earliestGame(matchDay):
@@ -55,8 +75,10 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='readTemperature.py - This tool reads temps on client and writes to DB and sends to host')
     parser.add_argument("-v","--verbosity", action="count", help="increase output verbosity")
+    parser.add_argument("-f","--force", action="count", help="force immediate start")
     parser.add_argument("-d","--day", action="store", help="matchday")
     parser.add_argument("-y","--year", action="store", help="year")
+    parser.add_argument("-t","--team", action="store", help="favorite Team")
 
     args = parser.parse_args()
 
@@ -70,7 +92,12 @@ if __name__ == '__main__':
 
     if (ligaTarget.bVerbose):
         coloredOutput.printLog("\n*** getCurrentMatchDay.py***")
-
+    
+    if args.force:
+        bForced ="True"
+        coloredOutput.printSuperVerbose("forced mode turned on")
+        #ligaTarget.bVerbose=True
+    
     strMatchDay = ""
 
     if args.day:
@@ -119,11 +146,19 @@ if __name__ == '__main__':
 
         days, seconds = diff.days, diff.seconds
         hours = days * 24 + (seconds /3600)
+        Waitseconds = days * 24 * 60 * 60 + seconds
         if (hours > 23):
             coloredOutput.printWarning(str(int(hours)) + " hours to go - tune back in 24hrs before game day" )
+            exit
         else:
             coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
-            
+            #waitForMatchDayStart(nextLocal)
+            #monitorMatchday()
+
+        if (bForced):
+            coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
+            waitForMatchDayStart(nextLocal)
+            #monitorMatchday()
 
 
 
