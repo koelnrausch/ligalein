@@ -1,6 +1,7 @@
 
 bVerbose = False  # set true for verbose outputs
 bDebug = False  # set true for verbose outputs
+bForced = False
 
 strLeagueIdentifier = "bl1"
 

@@ -16,6 +16,11 @@ import ligaTarget
 import requests
 
 import coloredOutput
+
+def monitorMatchDay():
+    return
+    
+
 def waitForMatchDayStart(nextLocal):
     now = datetime.now()
     nowCET = local_timezone.localize(now)
@@ -30,9 +35,11 @@ def waitForMatchDayStart(nextLocal):
         print ("Seconds: " + str (seconds))
 
     hours = days * 24 + (seconds /3600) 
-    Waitseconds = days * 24 * 60 * 60 + seconds
+    Waitseconds = (days * 24 * 60 * 60 + seconds ) - (60*60)
     if (ligaTarget.bVerbose):
-        print ("sleep:   " + str (Waitseconds))
+        coloredOutput.printWarning ("sleep:   " + str (Waitseconds))
+    if Waitseconds>0:
+        sleep(Waitseconds)
     
 
     return
@@ -94,9 +101,9 @@ if __name__ == '__main__':
         coloredOutput.printLog("\n*** getCurrentMatchDay.py***")
     
     if args.force:
-        bForced ="True"
+        ligaTarget.bForced ="True"
         coloredOutput.printSuperVerbose("forced entry mode turned on")
-        #ligaTarget.bVerbose=True
+        
     
     
     if args.day:
@@ -154,12 +161,10 @@ if __name__ == '__main__':
             #waitForMatchDayStart(nextLocal)
             #monitorMatchday()
 
-        if (bForced):
+        if (ligaTarget.bForced):
             coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
             waitForMatchDayStart(nextLocal)
             #monitorMatchday()
-
-
 
         if (ligaTarget.bVerbose):
             print("End of monitorMatchDay.py")
