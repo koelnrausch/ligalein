@@ -18,8 +18,10 @@ def ligaTarget():
 
     return(strLigaTarget)
 
-#  baseUrl = "https://api.openligadb.de/GetCurrentGroup/bl1"
-#   https://api.openligadb.de/getmatchdata/bl1/2020/8
+# baseUrl get dcurrentgropu = "https://api.openligadb.de/GetCurrentGroup/bl1"
+# baseurl get macth data   "https://api.openligadb.de/getmatchdata/bl1/2020/8"
+# baseurlLastChange = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"
+
 def getBaseURL(strLigaTarget):
     if (strLigaTarget == 'Production'):
         baseurl = "https://api.openligadb.de/"
@@ -33,6 +35,10 @@ def getBaseURL(strLigaTarget):
         baseurl = "https://api.openligadb.de/"
 
     return baseurl
+
+def getAPIGetLastChangeDate(strLigaTarget):
+    baseurlLastChange = getBaseURL(strLigaTarget) + "getlastchangedate" + strLeagueIdentifier + "/"
+    return baseurlLastChange
 
 def getApiGetCurrentGroupURL(strLigaTarget):
     strURL = getBaseURL(strLigaTarget) + "GetCurrentGroup/"+strLeagueIdentifier + "/"
