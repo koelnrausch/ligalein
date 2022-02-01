@@ -4,6 +4,10 @@ bDebug = False  # set true for verbose outputs
 bForced = False
 
 strLeagueIdentifier = "bl1"
+strLeagueYear = "2021"
+strMatchDay = "1"
+
+
 
 
 
@@ -21,6 +25,7 @@ def ligaTarget():
 # baseUrl get dcurrentgropu = "https://api.openligadb.de/GetCurrentGroup/bl1"
 # baseurl get macth data   "https://api.openligadb.de/getmatchdata/bl1/2020/8"
 # baseurlLastChange = "https://www.openligadb.de/api/getlastchangedate/bl1/2021/20"
+# baseurl getavailteams "https://www.openligadb.de/api/getavailableteams/bl1/2016"
 
 def getBaseURL(strLigaTarget):
     if (strLigaTarget == 'Production'):
@@ -47,6 +52,9 @@ def getApiGetCurrentGroupURL(strLigaTarget):
 def getApiGetmatchdata(strLigaTarget):
     strURL = getBaseURL(strLigaTarget) + "GetCurrentGroup/"+strLeagueIdentifier+"/"
     return strURL
+
+def getAPIGetTeams(strLigaTarget):
+    strURL = getBaseURL(strLigaTarget) + "getavailableteams/"+strLeagueIdentifier+"/" 
 
 
 def getSerial():
