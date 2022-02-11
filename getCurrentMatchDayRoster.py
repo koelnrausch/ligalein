@@ -48,6 +48,7 @@ def getMatchDayRoster(iMatchDay):
         if (ligaTarget.bVerbose):
             print ("Match ID:     " + str( match["matchID"]) )
             print ("Date:         " + match["matchDateTimeUTC"])
+            print ("Last Update:  " + match["lastUpdateDateTime"])
             print ("Team 1:       " + str(match["team1"]["teamName"])  + ":" + str(match["team2"]["teamName"]) )
 
     if (ligaTarget.bVerbose):

@@ -1,6 +1,7 @@
 ligaMatchDay = 0
 ligaMatchDayID = 0
 ligaMatchDayList = {}
+ligaMatchDayListBaseline = {}
 
 ligaClubs = {}
 ligaFavTeam = 0
@@ -12,6 +13,7 @@ ligaSyncSql = False
 def dataInit():
     ligaMatchDayID = 0
     ligaMatchDayList = {}
+    ligaMatchDayListBaseline = {}
     ligaClubs = {}
     ligaFavTeam = 0
     

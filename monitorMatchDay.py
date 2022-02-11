@@ -13,24 +13,86 @@ from datetime import datetime
 from time import sleep
 #import syslogLiga
 import ligaTarget
+import ligaDB
 import requests
 
 import coloredOutput
 
+
 def matchdayHasUpdates(year, day):
+    if (ligaTarget.bVerbose):
+        print("### CALLED monitorMatchDay.py/matchDayHasUpdates("+year +"/"+ day+")")   
+
+    baseurl = "https://www.openligadb.de/api/getlastchangedate/bl1/" + year + "/" + day
+    response = requests.get(baseurl)
+    
+    #lUp = datetime.strftime(response.text)
+    st = response.text
+    st = st.strip('"')
+    if (ligaTarget.bDebug):
+        coloredOutput.printFromHost("Status: " + str(response.status_code) + "\ntext:  " + response.text)
+        lUp=datetime.strptime(st,"%Y-%m-%dT%H:%M:%S.%f").timetuple()
+        coloredOutput.printFromHost("Host changed at:    "+ st)
+        
+    if (st != ligaTarget.strLastChangeTime) :
+        ts= datetime.now()
+        coloredOutput.printWarning("local time: "+ ts.strftime("%Y-%m-%d  %H:%M:%S"))
+        ligaTarget.strLastChangeTime = st
+        
+        if (ligaTarget.bVerbose):
+            coloredOutput.printFromHost("Status: " + str(response.status_code) + "\ntext:  " + response.text)
+            lUp=datetime.strptime(st,"%Y-%m-%dT%H:%M:%S.%f").timetuple()
+            coloredOutput.printFromHost("Host changed at:    "+ st)
+        
+        if (ligaTarget.bVerbose):
+            print("### EXIT monitorMatchDay.py/matchDayHasUpdates() -> YES")   
+
+        return True
+    else:
+        if (ligaTarget.bVerbose):
+            print("### EXIT monitorMatchDay.py/matchDayHasUpdates() -> NO")   
+        return False
+
+def compareUpdate(match, ligaMatchDayListBaseline):
+    if (ligaTarget.bVerbose):
+        print("### CALLED monitorMatchDay.py/compareUpdate("+ str(match) + ")")   
+
+    matchID = match["matchID"] 
+    for base in ligaMatchDayListBaseline:
+        if (base["matchID"] == matchID):
+            
+            if (match["lastUpdateTime"] !=  base["lastUpdateTime"]):
+                print("Match: " + match["mactID"] + " changed at: " + match["lastUpdateTime"])
+                return True
 
     return False
 
 def monitorMatchDay(year,day):
+    bChanged = False
+
     if (ligaTarget.bVerbose):
-        coloredOutput.printSuperVerbose(str(int(hours)) + "monitoring y: " + year + "d: " + day )
+        coloredOutput.printSuperVerbose("monitoring y: " + year + "d: " + day )
   
     while True:
         if matchdayHasUpdates(year, day):
             if (ligaTarget.bVerbose):
-                coloredOutput.printSuperVerbose(str(int(hours)) + "### update  " )
-            ts = datetime.now()
-            coloredOutput.printWarning("local time: "+ ts.strftime("%Y-%m-%d  %H:%M:%S"))
+                coloredOutput.printSuperVerbose("### update  " )
+            # now check for what happened...
+            ligaDB.ligaMatchDayList = getCurrentMatchDayRoster.getMatchDayRoster(day)
+
+            for match in ligaDB.ligaMatchDayList :
+                if (compareUpdate(match, ligaDB.ligaMatchDayListBaseline)):
+                    bChanged = True
+                    print ("Change detected")
+            if bChanged:
+                ligaDB.ligaMatchDayListBaseline = ligaDB.ligaMatchDayList 
+ 
+                print ("Last Update:  " + match["lastUpdateDateTime"])
+                print ("Team 1:       " + str(match["team1"]["teamName"])  + ":" + str(match["team2"]["teamName"]) )
+                print ("---")
+
+        # sleep 5 seconds before next API call
+        sleep(5)
     return
     
 

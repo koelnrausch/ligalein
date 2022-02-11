@@ -6,6 +6,7 @@ bForced = False
 strLeagueIdentifier = "bl1"
 strLeagueYear = "2021"
 strMatchDay = "1"
+strLastChangeTime = ""
 
 
 
