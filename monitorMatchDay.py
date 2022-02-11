@@ -17,7 +17,20 @@ import requests
 
 import coloredOutput
 
-def monitorMatchDay():
+def matchdayHasUpdates(year, day):
+
+    return False
+
+def monitorMatchDay(year,day):
+    if (ligaTarget.bVerbose):
+        coloredOutput.printSuperVerbose(str(int(hours)) + "monitoring y: " + year + "d: " + day )
+  
+    while True:
+        if matchdayHasUpdates(year, day):
+            if (ligaTarget.bVerbose):
+                coloredOutput.printSuperVerbose(str(int(hours)) + "### update  " )
+            ts = datetime.now()
+            coloredOutput.printWarning("local time: "+ ts.strftime("%Y-%m-%d  %H:%M:%S"))
     return
     
 
@@ -40,8 +53,9 @@ def waitForMatchDayStart(nextLocal):
         coloredOutput.printWarning ("sleep:   " + str (Waitseconds))
     if Waitseconds>0:
         sleep(Waitseconds)
+    if (ligaTarget.bVerbose):
+        coloredOutput.printWarning ("Waking up ... ")
     
-
     return
 
 
@@ -157,18 +171,19 @@ if __name__ == '__main__':
         days, seconds = diff.days, diff.seconds
         hours = days * 24 + (seconds /3600)
         Waitseconds = days * 24 * 60 * 60 + seconds
+        if (ligaTarget.bForced):
+            coloredOutput.printSuperVerbose("forced entry ...  kicking it off" )
+            monitorMatchDay(strMatchYear, strMatchDay)
+
         if (hours > 23):
             coloredOutput.printWarning(str(int(hours)) + " hours to go - tune back in 24hrs before game day" )
             exit
         else:
             coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
-            #waitForMatchDayStart(nextLocal)
-            #monitorMatchday()
-
-        if (ligaTarget.bForced):
-            coloredOutput.printSuperVerbose(str(int(hours)) + " hours to go ... kicking it off" )
             waitForMatchDayStart(nextLocal)
-            #monitorMatchday()
+            monitorMatchDay(strMatchYear, strMatchDay)
+
+ 
 
         if (ligaTarget.bVerbose):
             print("End of monitorMatchDay.py")
